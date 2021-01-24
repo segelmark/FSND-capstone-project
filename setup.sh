@@ -1,0 +1,1 @@
+DATABASE_URL='postgres://lukas@localhost:5432/capstone'
