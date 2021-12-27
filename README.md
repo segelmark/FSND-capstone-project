@@ -53,27 +53,24 @@ This describes the resources available through the Dolphin Therapy API, which al
 
 ### Endpoints (to be implemented)
 * GET '/therapists'
+* GET '/therapists/id'
 * POST '/therapists'
-* PATCH '/therapists'
-* DELETE '/therapists'
+* DELETE '/therapists/id'
 * GET '/bookings'
+* GET '/bookings/id'
 * POST '/bookings'
 * PATCH '/bookings'
 * DELETE '/bookings'
-* GET '/patients'
-* POST '/patients'
-* PATCH '/patients'
-* DELETE '/patients'
 
-#### GET '/therapists' (to be implemented)
-- Fetches a list of therapists and their availability 
+#### GET '/therapists'
+- Fetches a list of therapists and their data 
 - Request Arguments: None
 - Returns: An object with key "therapists" containing an array of objects with key "id": Int and "name": String 
 ```
 {
     "therapists": [
         {
-            name: "Tammy",
+            name: "Ally",
             id: 1
         },
         ...
@@ -82,9 +79,123 @@ This describes the resources available through the Dolphin Therapy API, which al
 }
 ```
 
-...
+### GET '/therapists/{therapist_id}'
+- Fetches a list of particular therapist and their data
+- Request Arguments:
+  - URL Params: Therapist ID as Int
+- Returns: An object with key "therapists" containing an array with on object with key "id": Int and "name": String 
+```
+{
+    "therapists": [
+        {
+            name: "Ally",
+            id: 1
+        }
+    ],
+    "success": true
+}
+```
 
-(to be defined)
+### POST '/therapists/'
+- Creates a new therapist
+- Request Arguments:
+  - Body: JSON Object containing "name": String
+```
+{
+    "name": "Ally",
+}
+```
+
+- Returns: Object with "created": Int
+```
+{
+  "success": True,
+  "created": therapist_id
+}
+```
+
+### DELETE '/therapists/{therapist_id}'
+- Deletes therapist with therapist_id from database
+- Request Arguments:
+  - URL Params: Therapist ID as Int
+- Returns: Object with "deleted": Int
+```
+{
+  "success": True,
+  "deleted": therapist_id
+}
+...
+```
+
+#### GET '/bookings'
+- Fetches a list of bookings and their related data 
+- Request Arguments: None
+- Returns: An object with key "therapists" containing an array of objects with key "id": Int, "therapist_id": Int, "start": datetime, "end": datetime
+```
+{
+    "bookings": [
+        {
+            id: 1,
+            therapist_id: 1,
+            start_time: "2016-04-08 11:43:36.309721"
+        },
+        ...
+    ],
+    "success": true
+}
+```
+
+### GET '/bookings/{therapist_id}'
+
+- Fetches a booking and its data 
+- Request Arguments:
+  - URL Params: Therapist ID as Int
+- Returns: An object with key "therapists" containing an array with one object with key "id": Int, "therapist_id": Int, "start": datetime, "end": datetime
+```
+{
+    "bookings": [
+        {
+            id: 1,
+            therapist_id: 1,
+            start_time: "2016-04-08 11:43:36.309721"
+        }
+    ],
+    "success": true
+}
+```
+### POST '/bookings/'
+- Creates a new booking
+- Request Arguments:
+  - Body: JSON Object containing "therapist_id": Int, "start": datetime, "end": datetime
+```
+{
+    therapist_id: 1,
+    start: 2016-04-08 11:43:36.309721,
+    end: 2016-04-08 11:43:36.309721
+}
+```
+
+- Returns: Object with "created": Int
+```
+{
+  "success": True,
+  "created": therapist_id
+}
+```
+
+
+### DELETE '/bookings/{booking_id}'
+- Deletes booking with booking_id from database
+- Request Arguments:
+  - URL Params: Booking ID as Int
+- Returns: Object with "deleted": Int
+```
+{
+  "success": True,
+  "deleted": booking_id
+}
+...
+```
 
 ### Status Codes
 
