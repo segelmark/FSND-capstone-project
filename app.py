@@ -1,11 +1,14 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, redirect
 from models import setup_db, Therapist, Booking
 from flask_cors import CORS
 from flask_migrate import Migrate
 
+from auth import AuthError, requires_auth, API_AUDIENCE, AUTH0_DOMAIN
+
 
 ENTRIES_PER_PAGE=10
+CLIENT_ID='AsZwgBsf4Gx4WEcXpRiuZ5rikSa7ePmi'
 
 def paginate(entries,page,entries_per_page):
   """Paginates all entries returning the right page for a certain entries per page """
@@ -41,6 +44,15 @@ def create_app(test_config=None):
     def get_greeting():
         return "lol"
 
+    @app.route('/login')
+    def login():
+        return redirect('https://' + AUTH0_DOMAIN + '/authorize?audience=' + API_AUDIENCE + '&response_type=token&client_id=' + CLIENT_ID + '&redirect_uri=http://localhost:5000/login-results')
+
+    # Here we're using the /callback route.
+    @app.route('/login-results')
+    def callback_handling():
+        return "Logged in"
+
     @app.route('/therapists')
     def retrieve_therapists():
         """ Endpoint to handle GET requests for all questions paginated (10 questions) """
@@ -61,7 +73,8 @@ def create_app(test_config=None):
         })
         
     @app.route('/therapists/<int:therapist_id>')
-    def retrieve_therapist(therapist_id):
+    @requires_auth('get:bookings')
+    def retrieve_therapist(payload,therapist_id):
         """ Endpoint to handle GET requests for all questions paginated (10 questions) """
         try:
             therapist = Therapist.query.get(therapist_id)
@@ -79,7 +92,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/therapists/<int:therapist_id>', methods=['DELETE'])
-    def delete_therapist(therapist_id):
+    @requires_auth('delete:therapists')
+    def delete_therapist(payload,therapist_id):
         """ Endpoint to DELETE therapist using it's ID. """
         try:
             therapist = Therapist.query.get(therapist_id)
@@ -98,7 +112,8 @@ def create_app(test_config=None):
         })
 
     @app.route('/therapists', methods=['POST'])
-    def create_therapist():
+    @requires_auth('post:therapists')
+    def create_therapist(payload):
         """ Endpoint to POST a new question """
         body = request.get_json()
 
@@ -119,7 +134,8 @@ def create_app(test_config=None):
             abort(422)     
 
     @app.route('/bookings')
-    def retrieve_bookings():
+    @requires_auth('get:bookings')
+    def retrieve_bookings(payload):
         """ Endpoint to handle GET requests for all questions paginated (10 questions) """
         try:
             bookings = Booking.query.order_by(Booking.id).all()
@@ -137,8 +153,71 @@ def create_app(test_config=None):
             'total_bookings': len(bookings)
         })
 
+    @app.route('/bookings/<int:booking_id>')
+    @requires_auth('get:bookings')
+    def retrieve_booking(payload,booking_id):
+        """ Endpoint to handle GET requests for all questions paginated (10 questions) """
+        try:
+            booking = Booking.query.get(booking_id)
+        except:
+            abort(422)
+        
+        # Make sure it found a booking
+        if not booking:
+             abort(404)
+
+        return jsonify({
+            'success': True,
+            'id': booking.id,
+            'start_time': booking.start_time,
+            'therapist_id': booking.therapist_id
+        })
+
+    @app.route('/bookings', methods=['POST'])
+    @requires_auth('post:bookings')
+    def create_booking(payload):
+        """ Endpoint to POST a new booking """
+        body = request.get_json()
+
+        # Check that we are getting the required fields
+        if not ('therapist_id' in body):
+            abort(422)
+
+        therapist = body.get('therapist_id', None)
+
+        booking = Booking(therapist_id=therapist)
+        booking.insert()
+        return jsonify({
+            'success': True,
+            'created': booking.id,
+        })
+
+    @app.route('/bookings/<int:booking_id>', methods=['PATCH'])
+    @requires_auth('patch:bookings')
+    def change_booking(payload,booking_id):
+        """ Endpoint to PATCH an existing booking """
+        body = request.get_json()
+        
+        # Check that we are getting the required fields
+        if not (body):
+            abort(422)
+
+        try:
+            booking = Booking.query.get(booking_id)
+        except:
+            abort(422)
+
+        if not (booking):
+            abort(404)
+        
+        if 'therapist_id' in body:
+            booking.therapist_id = body.get('therapist_id', None)
+        booking.update()
+        return "Ready to change booking number: " + str(booking_id)
+  
     @app.route('/bookings/<int:booking_id>', methods=['DELETE'])
-    def delete_booking(booking_id):
+    @requires_auth('delete:bookings')
+    def delete_booking(payload,booking_id):
         """ Endpoint to DELETE booking using it's ID. """
         try:
             booking = Booking.query.get(booking_id)
@@ -156,24 +235,6 @@ def create_app(test_config=None):
             'deleted': booking_id
         })
 
-    @app.route('/bookings', methods=['POST'])
-    def create_booking():
-        """ Endpoint to POST a new question """
-        body = request.get_json()
-
-        # Check that we are getting the required fields
-        if not ('therapist_id' in body):
-            abort(422)
-
-        therapist = body.get('therapist_id', None)
-
-        booking = Booking(therapist_id=therapist)
-        booking.insert()
-        return jsonify({
-            'success': True,
-            'created': booking.id,
-        })
-  
 
     #Error handlers for all expected errors 
 
@@ -200,6 +261,14 @@ def create_app(test_config=None):
         "error": 422,
         "message": "Unprocessable Entity"
         }), 422
+
+    @app.errorhandler(AuthError)
+    def auth_error(error):
+        return jsonify({
+            "success": False,
+            "error": error.status_code,
+            "message": error.error['description']
+        }), error.status_code
 
     return app
 

@@ -49,9 +49,9 @@ python3 app.py
 Navigate to project homepage [http://localhost:5000](http://localhost:5000) 
 
 ## API Documentation
-This describes the resources available through the Dolphin Therapy API, which allows for easy integration of the booking capaibilities into any web or mobile application.
+This describes the resources available through the Booking API, which allows for easy integration of the booking capaibilities into any web or mobile application.
 
-### Endpoints (to be implemented)
+### Endpoints
 * GET '/therapists'
 * GET '/therapists/id'
 * POST '/therapists'
@@ -59,7 +59,7 @@ This describes the resources available through the Dolphin Therapy API, which al
 * GET '/bookings'
 * GET '/bookings/id'
 * POST '/bookings'
-* PATCH '/bookings'
+* PATCH '/bookings/id'
 * DELETE '/bookings'
 
 #### GET '/therapists'
@@ -166,7 +166,7 @@ This describes the resources available through the Dolphin Therapy API, which al
 ### POST '/bookings/'
 - Creates a new booking
 - Request Arguments:
-  - Body: JSON Object containing "therapist_id": Int, "start": datetime, "end": datetime
+  - Body: JSON Object containing "therapist_id": Int, "start": datetime, "duration": Int
 ```
 {
     therapist_id: 1,
@@ -183,6 +183,25 @@ This describes the resources available through the Dolphin Therapy API, which al
 }
 ```
 
+### PATCH '/bookings/'
+- Updates a booking
+- Request Arguments:
+  - Body: JSON Object containing "therapist_id": Int, "start": datetime, "duration": Int
+```
+{
+    therapist_id: 1,
+    start: 2016-04-08 11:43:36.309721,
+    end: 2016-04-08 12:43:36.309721
+}
+```
+
+- Returns: Object with "created": Int
+```
+{
+  "success": True,
+  "created": therapist_id
+}
+```
 
 ### DELETE '/bookings/{booking_id}'
 - Deletes booking with booking_id from database
