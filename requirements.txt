@@ -19,3 +19,4 @@ Werkzeug==1.0.1
 python-dotenv
 requests
 auth0-python
+jose
