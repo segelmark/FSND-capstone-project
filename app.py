@@ -46,7 +46,7 @@ def create_app(test_config=None):
 
     @app.route('/login')
     def login():
-        return redirect('https://' + AUTH0_DOMAIN + '/authorize?audience=' + API_AUDIENCE + '&response_type=token&client_id=' + CLIENT_ID + '&redirect_uri=http://localhost:5000/login-results')
+        return redirect('https://' + AUTH0_DOMAIN + '/authorize?audience=' + API_AUDIENCE + '&response_type=token&client_id=' + CLIENT_ID + '&redirect_uri=' + request.host_url + 'login-results')
 
     # Here we're using the /callback route.
     @app.route('/login-results')
