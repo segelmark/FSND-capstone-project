@@ -64,6 +64,7 @@ This describes the resources available through the Booking API, which allows for
 
 #### GET '/therapists'
 - Fetches a list of therapists and their data 
+- Roles based authentication: No authentication required
 - Request Arguments: None
 - Returns: An object with key "therapists" containing an array of objects with key "id": Int and "name": String 
 ```
@@ -81,6 +82,7 @@ This describes the resources available through the Booking API, which allows for
 
 ### GET '/therapists/{therapist_id}'
 - Fetches a list of particular therapist and their data
+- Roles based authentication: Admin or Therapist
 - Request Arguments:
   - URL Params: Therapist ID as Int
 - Returns: An object with key "therapists" containing an array with on object with key "id": Int and "name": String 
@@ -98,6 +100,7 @@ This describes the resources available through the Booking API, which allows for
 
 ### POST '/therapists/'
 - Creates a new therapist
+- Roles based authentication: Admin
 - Request Arguments:
   - Body: JSON Object containing "name": String
 ```
@@ -116,6 +119,7 @@ This describes the resources available through the Booking API, which allows for
 
 ### DELETE '/therapists/{therapist_id}'
 - Deletes therapist with therapist_id from database
+- Roles based authentication: Admin
 - Request Arguments:
   - URL Params: Therapist ID as Int
 - Returns: Object with "deleted": Int
@@ -128,7 +132,8 @@ This describes the resources available through the Booking API, which allows for
 ```
 
 #### GET '/bookings'
-- Fetches a list of bookings and their related data 
+- Fetches a list of bookings and their related data
+- Roles based authentication: Admin or Therapist
 - Request Arguments: None
 - Returns: An object with key "therapists" containing an array of objects with key "id": Int, "therapist_id": Int, "start": datetime, "end": datetime
 ```
@@ -148,6 +153,7 @@ This describes the resources available through the Booking API, which allows for
 ### GET '/bookings/{therapist_id}'
 
 - Fetches a booking and its data 
+- Roles based authentication: Admin or Therapist
 - Request Arguments:
   - URL Params: Therapist ID as Int
 - Returns: An object with key "therapists" containing an array with one object with key "id": Int, "therapist_id": Int, "start": datetime, "end": datetime
@@ -165,6 +171,7 @@ This describes the resources available through the Booking API, which allows for
 ```
 ### POST '/bookings/'
 - Creates a new booking
+- Roles based authentication: Admin or Therapist
 - Request Arguments:
   - Body: JSON Object containing "therapist_id": Int, "start": datetime, "duration": Int
 ```
@@ -185,6 +192,7 @@ This describes the resources available through the Booking API, which allows for
 
 ### PATCH '/bookings/'
 - Updates a booking
+- Roles based authentication: Admin or Therapist
 - Request Arguments:
   - Body: JSON Object containing "therapist_id": Int, "start": datetime, "duration": Int
 ```
@@ -205,6 +213,7 @@ This describes the resources available through the Booking API, which allows for
 
 ### DELETE '/bookings/{booking_id}'
 - Deletes booking with booking_id from database
+- Roles based authentication: Admin or Therapist
 - Request Arguments:
   - URL Params: Booking ID as Int
 - Returns: Object with "deleted": Int
