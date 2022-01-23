@@ -52,21 +52,22 @@ Navigate to project homepage [http://localhost:5000](http://localhost:5000)
 This describes the resources available through the Booking API, which allows for easy integration of the booking capaibilities into any web or mobile application.
 
 ### Roles
-- Admin
- - Performs therapy
- - Permissions
-  - post:therapists	- Create new therapist
-  - delete:therapists	- Delete therapists
-  - delete:bookings	- Delete bookings
-  - get:bookings	- Allows you to see all bookings & details of a therapists
-  - patch:bookings	- Update bookings
-  - post:bookings	- Create a new booking
- - Performs therapy
- - Permissions
-  - delete:bookings	- Delete bookings
-  - get:bookings	- Allows you to see all bookings & details of a therapists
-  - patch:bookings	- Update bookings
-  - post:bookings	- Create a new booking
+Admin
+* Performs therapy
+* Permissions
+    * Tpost:therapists	- Create new therapist
+    * Tdelete:therapists	- Delete therapists
+    * Tdelete:bookings	- Delete bookings
+    * Tget:bookings	- Allows you to see all bookings & details of a therapists
+    * Tpatch:bookings	- Update bookings
+    * Tpost:bookings	- Create a new booking
+Therapist
+* Performs therapy
+* Permissions
+    * Tdelete:bookings	- Delete bookings
+    * Tget:bookings	- Allows you to see all bookings & details of a therapists
+    * Tpatch:bookings	- Update bookings
+    * Tpost:bookings	- Create a new booking
 
 ### Endpoints
 * GET '/therapists'
