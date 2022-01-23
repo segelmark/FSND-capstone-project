@@ -200,7 +200,7 @@ class BookingTestCase(unittest.TestCase):
         therapist = Booking.query.filter(Booking.id == booking_id).one_or_none()
         self.assertEqual(therapist, None)
 
-    def test_get_bookings_unauthenticated(self):
+    def test_delete_bookings_unauthenticated(self):
         """ Test to see that we cannot delete bookings when unauthenticated"""
         res = self.client().delete('/bookings/'+str(1))
         self.assertEqual(res.status_code, 401)

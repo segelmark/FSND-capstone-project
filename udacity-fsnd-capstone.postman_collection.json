@@ -1,0 +1,216 @@
+{
+	"info": {
+		"_postman_id": "0b7b7819-370a-49c2-84a6-dc353e6e62a9",
+		"name": "udacity-fsnd-capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/therapists",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/therapists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"therapists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/therapist/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/therapists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"therapists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/therapists",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Tanner\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/therapists",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"therapists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/therapists/1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/therapists/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"therapists",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/bookings",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"therapist_id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/bookings",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"therapist_id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/bookings/2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"bookings",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings/1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/boookings/2",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"boookings",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkV0dGFDa0h4dUFXaUI0UlBoejJKTyJ9.eyJpc3MiOiJodHRwczovL3VkYWNpdHktc2VnZWwuZXUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxMDY1MDU5NTE0MzgxODYwMTQ0IiwiYXVkIjoiZnNuZC1jYXBzdG9uZS5zZWdlbG1hcmsuY29tIiwiaWF0IjoxNjQyOTcyMTEwLCJleHAiOjE2NDI5NzkzMTAsImF6cCI6IkFzWndnQnNmNEd4NFdFY1hwUml1WjVyaWtTYTdlUG1pIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6Ym9va2luZ3MiLCJkZWxldGU6dGhlcmFwaXN0cyIsImdldDpib29raW5ncyIsInBhdGNoOmJvb2tpbmdzIiwicG9zdDpib29raW5ncyIsInBvc3Q6dGhlcmFwaXN0cyJdfQ.PjXmDRx6OdBZF8VRg3Kt0sv24_jsNAkrF8lwnGM6XeMgSu24HpNBOPrp3q1q3eJssGgdWk33ecyOIV5JQzrctoi90ROxXa6sHn3aY3LDDDTyJ3OvCaKuBI8D1pq1TBIdn9O6CepKBPoi77_oyhqId2wLAQojSkJAJesDdVzW9Gkis1hmzHkjE-dbmzhWz2xW_ILg6uqWHV1zcW4w1uzcgK998mKUOW_UhXi0OhbWmNIRAyims7ZiyYkYy8tVFDh3qHJgUQGgu7DLLGeTcXoYO9j5hn_E1apSa6_VB54QDDjhwVFSliKaBUZNIjkyi8aia_C9AWknCFFepUfYLFc6Vw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:5000",
+			"disabled": true
+		},
+		{
+			"key": "host",
+			"value": "https://segelmark-fsnd-capstone.herokuapp.com"
+		}
+	]
+}
