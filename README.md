@@ -55,19 +55,19 @@ This describes the resources available through the Booking API, which allows for
 Admin
 * Performs therapy
 * Permissions
-    * Tpost:therapists	- Create new therapist
-    * Tdelete:therapists	- Delete therapists
-    * Tdelete:bookings	- Delete bookings
-    * Tget:bookings	- Allows you to see all bookings & details of a therapists
-    * Tpatch:bookings	- Update bookings
-    * Tpost:bookings	- Create a new booking
+    * post:therapists	- Create new therapist
+    * delete:therapists	- Delete therapists
+    * delete:bookings	- Delete bookings
+    * get:bookings	- Allows you to see all bookings & details of a therapists
+    * patch:bookings	- Update bookings
+    * post:bookings	- Create a new booking
 Therapist
 * Performs therapy
 * Permissions
-    * Tdelete:bookings	- Delete bookings
-    * Tget:bookings	- Allows you to see all bookings & details of a therapists
-    * Tpatch:bookings	- Update bookings
-    * Tpost:bookings	- Create a new booking
+    * delete:bookings	- Delete bookings
+    * get:bookings	- Allows you to see all bookings & details of a therapists
+    * patch:bookings	- Update bookings
+    * post:bookings	- Create a new booking
 
 ### Endpoints
 * GET '/therapists'
