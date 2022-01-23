@@ -1,4 +1,3 @@
-import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
@@ -6,11 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from models import setup_db, Therapist, Booking
 
-AUTH_TOKEN='Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkV0dGFDa0h4dUFXaUI0UlBoejJKTyJ9.eyJpc3MiOiJodHRwczovL3VkYWNpdHktc2VnZWwuZXUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAxMDY1MDU5NTE0MzgxODYwMTQ0IiwiYXVkIjoiZnNuZC1jYXBzdG9uZS5zZWdlbG1hcmsuY29tIiwiaWF0IjoxNjQyMTE4NDcwLCJleHAiOjE2NDIxMjU2NzAsImF6cCI6IkFzWndnQnNmNEd4NFdFY1hwUml1WjVyaWtTYTdlUG1pIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6Ym9va2luZ3MiLCJkZWxldGU6dGhlcmFwaXN0cyIsImdldDpib29raW5ncyIsInBhdGNoOmJvb2tpbmdzIiwicG9zdDpib29raW5ncyIsInBvc3Q6dGhlcmFwaXN0cyJdfQ.SwDREC1Ts-QpxLK1jbzHSTs9rWWTUHUvQCzXYMcnPyEGKVBHnoho7LY8i2knOZN_CiXluLedPN6y3abOfPWXTl3TnmmjFndQOz36jxcANtjpZLPbvf91-5lRkECfDgb6tA44tT-lnL8YZb0mSOY3sgvJ5fsBSq6xCoVH2fFIQX8kFGTuyYvGy2KZ1D8ERUNjBY9f5ueIZ89U8ZCGkdYrScwDwKbP4NqoR9OG9aA67y0h87XKYXFWE5TYEEXQGVprvf7zOL7XL5LB0BusiWs_vR5tPddmsqT907BOHZakAyOh542quhxYpPJd0asn-OLdxZMxgXxeRvozy1w9qHRJKg'
-HEADERS={'Authorization': AUTH_TOKEN}
+print("Enter an admin authentication token;")
+admin_token='Bearer ' + input()
+admin_headers={'Authorization': admin_token}
 
-class TriviaTestCase(unittest.TestCase):
-    """This class represents the trivia test case"""
+print("Enter a therapist authentication token;")
+therapist_token='Bearer ' + input()
+therapist_headers={'Authorization': therapist_token}
+
+class BookingTestCase(unittest.TestCase):
+    """This class represents the booking test case"""
 
     def setUp(self):
         """Define test variables and initialize app."""
@@ -55,10 +59,15 @@ class TriviaTestCase(unittest.TestCase):
         # Check data
         self.assertTrue(len(data['therapists']))
 
+    def test_get_bookings_unauthenticated(self):
+        """ Test to see that we cannot access bookings page unauthenticated"""
+        res = self.client().get('/bookings')
+        self.assertEqual(res.status_code, 401)
+
     def test_get_bookings_success(self):
         """Test that we get a response when trying to get bookings """
 
-        res = self.client().get('/bookings',headers=HEADERS)
+        res = self.client().get('/bookings',headers=therapist_headers)
         data = json.loads(res.data)
 
         # Check success
@@ -72,7 +81,7 @@ class TriviaTestCase(unittest.TestCase):
     def test_get_therapists_not_found(self):
         """ Test what happens if we try to look for therapist that doesn't exist """
 
-        res = self.client().get('/therapists/9999',headers=HEADERS)
+        res = self.client().get('/therapists/9999',headers=admin_headers)
         data = json.loads(res.data)
 
         #Check for lack of success with correct error code and message
@@ -82,7 +91,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_therapist_page_not_found(self):
         """Test what happens if we try to delete something that doesn't exist"""
-        res = self.client().get('/therapists/9999',headers=HEADERS)
+        res = self.client().get('/therapists/9999',headers=admin_headers)
         data = json.loads(res.data)
 
         #Check for lack of success with correct error code and message
@@ -96,7 +105,7 @@ class TriviaTestCase(unittest.TestCase):
         #Count what is in the database
         therapists_initially = Therapist.query.all()
 
-        res = self.client().post('/therapists', json=self.example_therapist,headers=HEADERS)
+        res = self.client().post('/therapists', json=self.example_therapist,headers=admin_headers)
         data = json.loads(res.data)
 
         #Check for successful creation
@@ -110,7 +119,7 @@ class TriviaTestCase(unittest.TestCase):
         therapists_created = Therapist.query.all()
         self.assertTrue(len(therapists_created)>len(therapists_initially))
 
-        res_delete = self.client().delete('/therapists/'+str(therapist_id),headers=HEADERS)
+        res_delete = self.client().delete('/therapists/'+str(therapist_id),headers=admin_headers)
         data_delete = json.loads(res_delete.data)
 
         #Check for successful deletion
@@ -130,7 +139,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(therapist, None)
 
     def test_create_therapist_fields_missing(self):
-        res = self.client().post('/therapists', json="", headers=HEADERS)
+        res = self.client().post('/therapists', json="", headers=admin_headers)
         data = json.loads(res.data)
 
         # Check for lack of success with correct error code and message
@@ -138,7 +147,63 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable Entity')
 
+    def test_create_and_delete_booking_success(self):
+        """ Test successful booking workflow """
 
+        # We need a new therapist
+        res = self.client().post('/therapists', json=self.example_therapist,headers=admin_headers)
+        data = json.loads(res.data)
+
+        #Check for successful creation
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['created'])
+
+        therapist_id = data['created']
+
+        #Count how many bookings are in the database
+        bookings_initially = Booking.query.all()
+        
+        example_booking = {
+                    'therapist_id': therapist_id
+        }
+        res = self.client().post('/bookings', json=example_booking,headers=therapist_headers)
+        data = json.loads(res.data)
+
+        #Check for successful creation
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['created'])
+
+        booking_id = data['created']
+
+        #Count again and compare to baseline
+        bookings_created = Booking.query.all()
+        self.assertTrue(len(bookings_created)>len(bookings_initially))
+
+        res_delete = self.client().delete('/bookings/'+str(booking_id),headers=therapist_headers)
+        data_delete = json.loads(res_delete.data)
+
+        #Check for successful deletion
+        self.assertEqual(res_delete.status_code, 200)
+        self.assertEqual(data_delete['success'], True)
+
+        #Make sure we delete the right thing
+        self.assertEqual(data_delete['deleted'], booking_id)
+
+        #Count again after delete and compare to previous counts
+        bookings_deleted = Booking.query.all()
+        self.assertTrue(len(bookings_deleted)<len(bookings_created))
+        self.assertTrue(len(bookings_deleted)==len(bookings_initially))
+
+        #Make sure the therapist we deleted doesn't exist
+        therapist = Booking.query.filter(Booking.id == booking_id).one_or_none()
+        self.assertEqual(therapist, None)
+
+    def test_get_bookings_unauthenticated(self):
+        """ Test to see that we cannot delete bookings when unauthenticated"""
+        res = self.client().delete('/bookings/'+str(1))
+        self.assertEqual(res.status_code, 401)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

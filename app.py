@@ -53,6 +53,14 @@ def create_app(test_config=None):
     def callback_handling():
         return "Logged in"
 
+    @app.route('/logout')
+    def logout():
+        return redirect('https://' + AUTH0_DOMAIN + '/v2/logout?audience=' + API_AUDIENCE + '&client_id=' + CLIENT_ID + '&returnTo=' + request.host_url + 'logout-results')
+
+    @app.route('/logout-results')
+    def loggedout():
+        return "Logged in"
+
     @app.route('/therapists')
     def retrieve_therapists():
         """ Endpoint to handle GET requests for all questions paginated (10 questions) """
@@ -186,7 +194,10 @@ def create_app(test_config=None):
         therapist = body.get('therapist_id', None)
 
         booking = Booking(therapist_id=therapist)
-        booking.insert()
+        try:
+            booking.insert()
+        except:
+            abort(422)
         return jsonify({
             'success': True,
             'created': booking.id,
@@ -209,11 +220,19 @@ def create_app(test_config=None):
 
         if not (booking):
             abort(404)
-        
+
         if 'therapist_id' in body:
             booking.therapist_id = body.get('therapist_id', None)
-        booking.update()
-        return "Ready to change booking number: " + str(booking_id)
+        try:
+            booking.update()
+        except:
+            abort(422)
+        return jsonify({
+            'success': True,
+            'id': booking.id,
+            'start_time': booking.start_time,
+            'therapist_id': booking.therapist_id
+        })
   
     @app.route('/bookings/<int:booking_id>', methods=['DELETE'])
     @requires_auth('delete:bookings')
