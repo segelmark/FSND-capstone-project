@@ -61,6 +61,7 @@ Admin
     * get:bookings	- Allows you to see all bookings & details of a therapists
     * patch:bookings	- Update bookings
     * post:bookings	- Create a new booking
+
 Therapist
 * Performs therapy
 * Permissions
